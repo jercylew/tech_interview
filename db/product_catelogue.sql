@@ -4,25 +4,36 @@
 USE master
 GO
 
-DECLARE @dbname nvarchar(128)
-SET @dbname = N'product_catalogue'
-GO
+-- DECLARE @dbname nvarchar(128)
+-- SET @dbname = N'product_catalogue'
+-- GO
 
 -- Drop the database if it already exists
 IF  EXISTS (
 	SELECT name 
 		FROM sys.databases 
-		WHERE name = @dbname
+		WHERE name = 'product_catalogue'
 )
-DROP DATABASE "@dbname"
+DROP DATABASE product_catalogue
 
-CREATE DATABASE "@dbname"
-USE @dbname
+CREATE DATABASE product_catalogue
+USE product_catalogue
+GO
+
+-- Create Catelogue table
+IF OBJECT_ID('Catelogue', 'U') IS NOT NULL
+  DROP TABLE Catelogue
+
+CREATE TABLE Catelogue (
+    CatelogueID int NOT NULL PRIMARY KEY,
+    CatelogueName varchar(128) NOT NULL,
+    ParentCatelogueID int FOREIGN KEY REFERENCES Catelogue (CatelogueID)
+);
 GO
 
 -- Create Product table
-IF OBJECT_ID("Product", 'U') IS NOT NULL
-  DROP TABLE "Product"
+IF OBJECT_ID('Product', 'U') IS NOT NULL
+  DROP TABLE Product
 
 CREATE TABLE Product (
     ProductID int NOT NULL PRIMARY KEY,
@@ -33,20 +44,9 @@ CREATE TABLE Product (
 );
 GO
 
--- Create Catelogue table
-IF OBJECT_ID("Catelogue", 'U') IS NOT NULL
-  DROP TABLE "Catelogue"
-
-CREATE TABLE Catelogue (
-    CatelogueID int NOT NULL PRIMARY KEY,
-    CatelogueName varchar(128) NOT NULL,
-    ParentCatelogueID int FOREIGN KEY REFERENCES Catelogue (CatelogueID)
-);
-GO
-
 -- Create Manufacture table
-IF OBJECT_ID("Manufacture", 'U') IS NOT NULL
-  DROP TABLE "Manufacture"
+IF OBJECT_ID('Manufacture', 'U') IS NOT NULL
+  DROP TABLE Manufacture
 
 CREATE TABLE Manufacture (
     ManufactureID int NOT NULL PRIMARY KEY,
